@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Header, Container, Segment, Button, List } from 'semantic-ui-react'
 import Dropzone from 'react-dropzone'
-import axios from 'axios'
 import 'semantic-ui-css/semantic.min.css'
 
 class App extends Component {
@@ -13,8 +12,11 @@ class App extends Component {
   }
 
   onDrop = (a, r) =>
-    this.setState({ files: [...this.state.files, ...a] }, () =>
-      console.log(this.state.files)
+    this.setState(
+      {
+        files: [...this.state.files, ...a]
+      },
+      () => console.log(this.state.files)
     )
 
   updateWindowHeight = () =>
@@ -23,15 +25,24 @@ class App extends Component {
     })
 
   upload = () =>
-    axios
-      .post(
-        'https://script.google.com/a/siswa.um.edu.my/macros/s/AKfycbxS1M8Tua_kHUw8AI_XN7RQa79VOnUJoZ0SgzLgZYlzcgbq2wE/exec',
-        {
-          text: 'hey'
-        },
-        { 'Access-Control-Allow-Origin': '*' }
+    Promise.all(
+      this.state.files.map(file =>
+        fetch(
+          'https://script.google.com/macros/s/AKfycbxS1M8Tua_kHUw8AI_XN7RQa79VOnUJoZ0SgzLgZYlzcgbq2wE/exec',
+          {
+            method: 'post',
+            body: this.getFormData(file)
+          }
+        ).then(res => res.json())
       )
-      .then(res => console.log(res))
+    ).then(response => console.log(response))
+
+  getFormData = file => {
+    const data = new FormData()
+    data.append('attachment', file)
+    data.append('size', file.size)
+    return data
+  }
 
   render() {
     return (
