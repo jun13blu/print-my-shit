@@ -2,6 +2,7 @@
   "name": "print-my-shit",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://jun13blu.github.io/print-my-shit",
   "dependencies": {
     "axios": "^0.17.1",
     "react": "^16.2.0",
